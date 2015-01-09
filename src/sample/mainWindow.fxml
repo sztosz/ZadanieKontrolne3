@@ -11,6 +11,6 @@
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MainController">
    <children>
       <ListView fx:id="notesList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-      <Button fx:id="addNoteButton" mnemonicParsing="false" onMouseClicked="#addNote" text="Add Note" />
+      <Button fx:id="addNoteButton" mnemonicParsing="false" onMouseClicked="#addNote" text="Dodaj notatkę" />
    </children>
 </VBox>

@@ -7,11 +7,10 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="82.0" prefWidth="226.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="82.0" prefWidth="226.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.CategoryController">
    <children>
-      <TextField layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="199.0" />
-      <Button layoutX="14.0" layoutY="46.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text="Add Category" />
-      <Button layoutX="161.0" layoutY="46.0" mnemonicParsing="false" text="Cancel" />
+      <TextField fx:id="categoryName" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="199.0" />
+      <Button fx:id="addCategoryButton" layoutX="14.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#addCategory" prefHeight="25.0" prefWidth="103.0" text="Dodaj Kategorię" />
+      <Button fx:id="cancel" layoutX="161.0" layoutY="46.0" mnemonicParsing="false" onMouseClicked="#cancel" text="Anuluj" />
    </children>
 </AnchorPane>
