@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * Created by Bartosz Nowak on 2015-01-07.
  */
-public class Note {
+public class Note implements Comparable<Note> {
 
     private String title;
     private String content;
@@ -51,5 +51,16 @@ public class Note {
 
     public void setNoteCategory(String noteCategory) {
         this.noteCategory = noteCategory;
+    }
+
+    @Override
+    public int compareTo(Note otherNote) {
+        if (getCompletionDate().isAfter(otherNote.getCompletionDate())) {
+            return 1;
+        } else if (getCompletionDate().isBefore(otherNote.getCompletionDate())) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

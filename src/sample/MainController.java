@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,15 +12,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainController {
@@ -31,11 +32,6 @@ public class MainController {
     List<Note> notes = new ArrayList<Note>();
     ObservableList<Note> noteObservableList = FXCollections.observableList(notes);
 
-    public void populateNotesList() {
-        ObservableList<String> items = FXCollections.observableArrayList(
-                "Single", "Double", "Suite", "Family App");
-//        notesList.setItems(items);
-    }
 
     public void addBindings() {
 //        addNoteButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -45,26 +41,46 @@ public class MainController {
 //            }
 //        });
 //        ObservableList<Note> noteObservableList = FXCollections.observableList(notes);
-        notesList.setItems(noteObservableList); // TODO fix it across the boear to use proper ObservableList and proper name
+        notesList.setItems(noteObservableList); // TODO fix it across the board to use proper ObservableList and proper name
+        notesList.getItems().sort(Comparator.<Note>naturalOrder());
         notesList.setCellFactory(new Callback<ListView<Note>, ListCell<Note>>() {
             @Override
             public ListCell<Note> call(ListView<Note> param) {
 
-                return new ListCell<Note>(){
+                final ListCell<Note> listCell = new ListCell<Note>(){
                     @Override
-                    protected void updateItem(Note note, boolean bool) {
-                        super.updateItem(note, bool);
+                    protected void updateItem(Note note, boolean empty) {
+                        super.updateItem(note, empty);
                         if (note != null) {
                             setText(note.getTitle() + ", " + note.getNoteCategory() + ", " + note.getCompletionDate());
                             if (note.getHighPriority()) {
                                 setStyle("-fx-text-fill: red;");
                             }
+                        } else if (empty) {
+                            setText("");
                         }
 
                     }
+
                 };
+                final ContextMenu listCellMenu = new ContextMenu();
+                MenuItem removeItem = new MenuItem("Usuń");
+                removeItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        notesList.getItems().remove(listCell.getItem());
+                    }
+                });
+                listCellMenu.getItems().add(removeItem);
+                listCell.contextMenuProperty().bind(
+                        Bindings.when(Bindings.isNotNull(listCell.itemProperty()))
+                        .then(listCellMenu)
+                        .otherwise((ContextMenu)null)
+                );
+                return listCell;
             }
         });
+//        notesList.set;
 
 
 
@@ -90,5 +106,9 @@ public class MainController {
             e.printStackTrace();
         }
 
+    }
+
+    public void removeNote(ActionEvent event) {
+        System.out.println(event.getTarget().toString());
     }
 }

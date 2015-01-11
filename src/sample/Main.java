@@ -24,8 +24,6 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
 
 
-        mainController.populateNotesList();  // TODO: Remove unnecessary code
-
         primaryStage.show();
     }
 
