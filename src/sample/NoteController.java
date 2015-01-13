@@ -1,3 +1,7 @@
+/**
+ * Created by Bartosz Nowak on 2015-01-08.
+ */
+
 package sample;
 
 import javafx.beans.value.ChangeListener;
@@ -9,6 +13,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -16,11 +23,9 @@ import java.io.IOException;
 import java.util.List;
 
 
-/**
- * Created by Bartosz Nowak on 2015-01-08.
- */
 public class NoteController {
 
+    @FXML private Button addButton;
     @FXML private Slider prioritySlider;
     @FXML private TextField noteTitle;
     @FXML private TextArea noteContent;
@@ -30,9 +35,14 @@ public class NoteController {
     @FXML private ComboBox<String> categoryList;
 
     List<Note> notes;
+    Note note;
+    Boolean IamNotEdited = true;
 
 
-    public void addBinding(List<Note> notes) {
+
+    public void addBinding(List<Note> notes, Note note) {
+        this.notes = notes;
+
         prioritySlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -53,9 +63,25 @@ public class NoteController {
         });
 //        noteTitle.textProperty().bind(categoryList.getSelectionModel().selectedItemProperty());
 //        noteTitle.setText(categoryList.getSelectionModel().getSelectedItem());
-        this.notes = notes;
         refreshCategoryList();
+        this.note = note;
+        if (note.getTitle() != null) {
+            fillFormFromNote();
+            IamNotEdited = false;
+            addButton.setText("Edytuj Notatkę");
+        }
 
+    }
+
+    private void fillFormFromNote() {
+        System.out.println(note.getTitle());
+
+        noteTitle.setText(note.getTitle());
+        noteContent.setText(note.getContent());
+        completionDate.setValue(note.getCompletionDate());
+        Double priority = note.getHighPriority() ? 1.0 : 0.0;
+        prioritySlider.setValue(priority);
+        categoryList.getSelectionModel().select(note.getNoteCategory());
     }
 
     public void addCategory(Event event) {
@@ -82,6 +108,7 @@ public class NoteController {
     public void refreshCategoryList() {
         categoryList.getItems().clear();
         categoryList.getItems().addAll(NoteCategories.INSTANCE.getCategories());
+        categoryList.getSelectionModel().select(0);
     }
 
     public void cancel(Event event) {
@@ -89,16 +116,63 @@ public class NoteController {
     }
 
     public void addNote(Event event) {
-        Note note = new Note();
-        note.setTitle(noteTitle.getText());
-        note.setContent(noteContent.getText());
-        note.setCompletionDate(completionDate.getValue());
-        Boolean highPriority = (prioritySlider.getValue() != 0);
-        note.setHighPriority(highPriority);
-        note.setNoteCategory(categoryList.getValue());
-//        int i = 1;
-        ((Node)event.getSource()).getScene().getWindow().hide();
 
-        notes.add(note);
+
+        final Tooltip tooltip = new Tooltip();
+        tooltip.setText("To pole nie może być puste");
+
+        if (checkNoteTitle(tooltip) &&  // TODO: Java does not check if all expressions it stops at first false. FIXIT !!!
+            checkNoteContent(tooltip) &&
+            checkCompletionDate(tooltip)) {
+            note.setHighPriority(prioritySlider.getValue() != 0);
+            note.setNoteCategory(categoryList.getValue());
+            if (IamNotEdited) {
+                notes.add(note);
+            } else {
+                int index = notes.indexOf(note);  // TODO: It's an ugly hack. Fix it when you can find some reliable soultion.
+                notes.remove(note);
+                notes.add(index, note);
+            }
+            ((Node)event.getSource()).getScene().getWindow().hide();
+        }
+
     }
+
+    private Boolean checkNoteTitle(Tooltip tooltip) {
+        if (noteTitle.getText() != null && ! noteTitle.getText().trim().isEmpty()) {
+            note.setTitle(noteTitle.getText());
+            noteTitle.setStyle("-fx-text-box-border: lightgray");
+            return true;
+        } else {
+            noteTitle.setStyle("-fx-text-box-border: red");
+            noteTitle.setTooltip(tooltip);
+            return false;
+        }
+    }
+
+    private Boolean checkNoteContent(Tooltip tooltip) {
+        if (noteContent.getText() != null && ! noteContent.getText().trim().isEmpty()) {
+            note.setContent(noteContent.getText());
+            noteContent.setStyle("-fx-text-box-border: lightgray");
+            return true;
+        } else {
+            noteContent.setStyle("-fx-text-box-border: red");
+            noteContent.setTooltip(tooltip);
+            return false;
+        }
+    }
+
+    private Boolean checkCompletionDate(Tooltip tooltip) {
+        if (completionDate.getValue() != null) {
+            note.setCompletionDate(completionDate.getValue());
+            completionDate.setStyle("-fx-background-color: lightgray");
+            return true;
+        } else {
+            completionDate.setStyle("-fx-background-color: red");
+//            completionDate.setBorder(Color.RED);
+            completionDate.setTooltip(tooltip);
+            return false;
+        }
+    }
+
 }

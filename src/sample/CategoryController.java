@@ -19,11 +19,18 @@ public class CategoryController {
 
     public void addCategory(Event event) {
 
-        NoteCategories.INSTANCE.addCategory(categoryName.getText());
-        noteController.refreshCategoryList();
-        ((Node)event.getSource()).getScene().getWindow().hide();
+        final Tooltip tooltip = new Tooltip();
+        tooltip.setText("To pole nie może być puste");
 
+        if (categoryName.getText() != null && ! categoryName.getText().trim().isEmpty()) {
 
+            NoteCategories.INSTANCE.addCategory(categoryName.getText());
+            noteController.refreshCategoryList();
+            ((Node) event.getSource()).getScene().getWindow().hide();
+        } else {
+            categoryName.setStyle("-fx-text-box-border: red ;");
+            categoryName.setTooltip(tooltip);
+        }
     }
 
     public void addParentControllerBinding(NoteController noteController) {

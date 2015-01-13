@@ -18,7 +18,7 @@ public class Main extends Application {
         Parent root = fxmlLoader.load();
 //        primaryStage.initModality(Modality.WINDOW_MODAL);
         MainController mainController = fxmlLoader.getController();
-//        mainController.setStage(primaryStage);
+        mainController.setStage(primaryStage);
         mainController.addBindings();
         primaryStage.setTitle("Notes");
         primaryStage.setScene(new Scene(root));

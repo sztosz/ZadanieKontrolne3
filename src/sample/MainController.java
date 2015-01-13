@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -53,9 +54,9 @@ public class MainController {
                         super.updateItem(note, empty);
                         if (note != null) {
                             setText(note.getTitle() + ", " + note.getNoteCategory() + ", " + note.getCompletionDate());
-                            if (note.getHighPriority()) {
-                                setStyle("-fx-text-fill: red;");
-                            }
+//                            if (note.getHighPriority()) {
+//                                setStyle("-fx-background-color: lightcoral"); // DOES NOT WORK with editing, something is messed up.
+//                            }
                         } else if (empty) {
                             setText("");
                         }
@@ -65,6 +66,7 @@ public class MainController {
                 };
                 final ContextMenu listCellMenu = new ContextMenu();
                 MenuItem removeItem = new MenuItem("Usuń");
+
                 removeItem.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -72,6 +74,15 @@ public class MainController {
                     }
                 });
                 listCellMenu.getItems().add(removeItem);
+                MenuItem editItem = new MenuItem("Edytuj");
+                editItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        editNote(notesList.getSelectionModel().getSelectedItem());
+
+                    }
+                });
+                listCellMenu.getItems().add(editItem);
                 listCell.contextMenuProperty().bind(
                         Bindings.when(Bindings.isNotNull(listCell.itemProperty()))
                         .then(listCellMenu)
@@ -86,29 +97,39 @@ public class MainController {
 
     }
 
-    public void addNote(Event event) {
+    public void editNote(Note note){
+        showAddNoteWindow(note);
+
+    }
+
+    public void addNote() {
+        showAddNoteWindow(new Note());
+    }
+
+
+    private void showAddNoteWindow(Note note){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("addNoteWindow.fxml"));
             Parent root = fxmlLoader.load();
             NoteController noteController = fxmlLoader.getController();
-            noteController.addBinding(noteObservableList);
+            noteController.addBinding(noteObservableList, note);
             Stage stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            stage.initOwner(mainWindowStage);
             stage.setTitle("Dodaj Notatkę");
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.show();
-
-//            mainWindowStage.getScene().getWindow().hide();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
-
     }
 
     public void removeNote(ActionEvent event) {
         System.out.println(event.getTarget().toString());
+    }
+
+    public void setStage(Stage stage) {
+        this.mainWindowStage = stage;
     }
 }
