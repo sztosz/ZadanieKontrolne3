@@ -7,11 +7,15 @@ package sample;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -74,9 +78,26 @@ public class MainController {
         showAddNoteWindow(note);
     }
 
-    public void addNote() {
+    public void addNote(KeyEvent event) {
+        if (event.getCode() == KeyCode.F1) {
+            showAddNoteWindow(new Note());
+        }
+    }
+
+    public void addNoteButtonClicked(MouseEvent event) {
         showAddNoteWindow(new Note());
     }
+
+// Why overloading does not work?
+
+//    public void addNote(MouseEvent event) {
+//        showAddNoteWindow(new Note());
+//    }
+//    public void addNote(KeyEvent event) {
+//        if (event.getCode() == KeyCode.F1) {
+//            showAddNoteWindow(new Note());
+//        }
+//    }
 
     private void showAddNoteWindow(Note note){
         try {
@@ -99,4 +120,5 @@ public class MainController {
     public void setStage(Stage stage) {
         this.mainWindowStage = stage;
     }
+
 }
