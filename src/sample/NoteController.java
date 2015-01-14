@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 
-
 public class NoteController {
 
     @FXML private Button addButton;
@@ -34,11 +33,9 @@ public class NoteController {
     @FXML private Label lowPriorityLabel;
     @FXML private ComboBox<String> categoryList;
 
-    List<Note> notes;
-    Note note;
-    Boolean IamNotEdited = true;
-
-
+    private List<Note> notes;
+    private Note note;
+    private Boolean IamNotEdited = true;
 
     public void addBinding(List<Note> notes, Note note) {
         this.notes = notes;
@@ -57,12 +54,9 @@ public class NoteController {
                         lowPriorityLabel.setStyle("-fx-text-fill: green;");
                         highPriorityLabel.setStyle("-fx-text-fill: red;");
                     }
-//                    noteTitle.setText(newValue.toString());
                 }
             }
         });
-//        noteTitle.textProperty().bind(categoryList.getSelectionModel().selectedItemProperty());
-//        noteTitle.setText(categoryList.getSelectionModel().getSelectedItem());
         refreshCategoryList();
         this.note = note;
         if (note.getTitle() != null) {
@@ -70,12 +64,9 @@ public class NoteController {
             IamNotEdited = false;
             addButton.setText("Edytuj Notatkę");
         }
-
     }
 
     private void fillFormFromNote() {
-        System.out.println(note.getTitle());
-
         noteTitle.setText(note.getTitle());
         noteContent.setText(note.getContent());
         completionDate.setValue(note.getCompletionDate());
@@ -97,9 +88,6 @@ public class NoteController {
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.show();
-
-//            mainWindowStage.getScene().getWindow().hide();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,12 +104,10 @@ public class NoteController {
     }
 
     public void addNote(Event event) {
-
-
         final Tooltip tooltip = new Tooltip();
         tooltip.setText("To pole nie może być puste");
 
-        if (checkNoteTitle(tooltip) &&  // TODO: Java does not check if all expressions it stops at first false. FIXIT !!!
+        if (checkNoteTitle(tooltip) &&  // TODO: Java does not check if all expressions it stops at first false. No simple way to go over it.
             checkNoteContent(tooltip) &&
             checkCompletionDate(tooltip)) {
             note.setHighPriority(prioritySlider.getValue() != 0);
@@ -129,13 +115,12 @@ public class NoteController {
             if (IamNotEdited) {
                 notes.add(note);
             } else {
-                int index = notes.indexOf(note);  // TODO: It's an ugly hack. Fix it when you can find some reliable soultion.
+                int index = notes.indexOf(note);  // TODO: It's an ugly hack. Fix it when you can find some reliable solution.
                 notes.remove(note);
                 notes.add(index, note);
             }
             ((Node)event.getSource()).getScene().getWindow().hide();
         }
-
     }
 
     private Boolean checkNoteTitle(Tooltip tooltip) {
@@ -169,10 +154,8 @@ public class NoteController {
             return true;
         } else {
             completionDate.setStyle("-fx-background-color: red");
-//            completionDate.setBorder(Color.RED);
             completionDate.setTooltip(tooltip);
             return false;
         }
     }
-
 }
